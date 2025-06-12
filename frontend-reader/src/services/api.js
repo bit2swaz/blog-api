@@ -49,5 +49,7 @@ export const api = {
   // Comments endpoints
   comments: {
     getByPostId: (postId) => apiClient.get(`/posts/${postId}/comments`),
+    create: (postId, data) => apiClient.post(`/posts/${postId}/comments`, data),
+    delete: (commentId) => apiClient.delete(`/comments/${commentId}`),
   },
 }; 
