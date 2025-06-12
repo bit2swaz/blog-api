@@ -93,10 +93,13 @@ The API uses JWT (JSON Web Token) for authentication:
 
 ### Comments
 
-- `GET /api/comments/post/:postId` - Get comments for a post
-- `POST /api/comments` - Create a new comment (protected)
-- `PUT /api/comments/:id` - Update a comment (protected)
+- `GET /api/posts/:postId/comments` - Get all comments for a post with nested replies
+- `POST /api/posts/:postId/comments` - Create a new comment or reply (protected)
+  - Request body: `{ "content": "Comment text", "parentId": "optional-parent-comment-id" }`
+  - If `parentId` is provided, the comment will be a reply to that comment
 - `DELETE /api/comments/:id` - Delete a comment (protected)
+  - Users can delete their own comments
+  - Users with AUTHOR role can delete any comment
 
 ### Tags
 
