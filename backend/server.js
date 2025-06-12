@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const { globalErrorHandler } = require('./utils/errorHandler');
+const { notFound } = require('./middleware/errorMiddleware');
 
 // Load environment variables
 dotenv.config();
@@ -8,10 +12,30 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Security middleware
+app.use(helmet()); // Set security HTTP headers
+
+// CORS configuration
+app.use(cors({
+  origin: [
+    'http://localhost:3000', // Frontend author
+    'http://localhost:3001', // Frontend reader
+    process.env.FRONTEND_AUTHOR_URL,
+    process.env.FRONTEND_READER_URL
+  ].filter(Boolean), // Filter out undefined values
+  credentials: true
+}));
+
+// Request logging
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+} else {
+  app.use(morgan('combined'));
+}
+
+// Body parser middleware
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Routes
 app.get('/', (req, res) => {
@@ -25,18 +49,14 @@ app.use('/api/posts', require('./routes/postRoutes'));
 app.use('/api/comments', require('./routes/commentRoutes'));
 app.use('/api/tags', require('./routes/tagRoutes'));
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  res.status(statusCode).json({
-    status: 'error',
-    statusCode,
-    message: err.message || 'Internal Server Error',
-  });
-});
+// Handle undefined routes (404)
+app.use(notFound);
+
+// Global error handling middleware
+app.use(globalErrorHandler);
 
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
 }); 

@@ -1,12 +1,16 @@
 const express = require('express');
 const router = express.Router();
 // const userController = require('../controllers/userController');
-const { authenticateJWT } = require('../middleware/authMiddleware');
+const { authenticateJWT, restrictTo } = require('../middleware/authMiddleware');
 
-// TODO: Implement user routes
-// router.post('/register', userController.register);
-// router.post('/login', userController.login);
-// router.get('/profile', authenticateJWT, userController.getProfile);
-// router.put('/profile', authenticateJWT, userController.updateProfile);
+// Protected routes
+router.use(authenticateJWT); // All routes below require authentication
+
+// User routes
+// router.get('/profile', userController.getProfile);
+// router.put('/profile', userController.updateProfile);
+
+// Admin routes (example of role-based access control)
+// router.get('/admin/users', restrictTo('ADMIN'), userController.getAllUsers);
 
 module.exports = router; 

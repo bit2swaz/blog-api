@@ -9,6 +9,8 @@ A RESTful API for a blog application built with Express.js and Prisma ORM.
 - PostgreSQL
 - Prisma ORM
 - JWT Authentication
+- Helmet (Security headers)
+- Morgan (Request logging)
 
 ## Project Structure
 
@@ -38,6 +40,9 @@ backend/
      DATABASE_URL="postgresql://username:password@localhost:5432/blogapi?schema=public"
      JWT_SECRET="your-secret-key-here"
      PORT=3000
+     NODE_ENV="development"
+     FRONTEND_AUTHOR_URL="http://localhost:3000"
+     FRONTEND_READER_URL="http://localhost:3001"
      ```
 
 3. Run database migrations:
@@ -49,6 +54,29 @@ backend/
    ```
    npm run dev
    ```
+
+## Security Features
+
+1. **JWT Authentication**:
+   - Tokens are verified for validity and expiration
+   - Users are authenticated before accessing protected routes
+
+2. **CORS Protection**:
+   - Configured to allow only specific frontend origins
+   - Prevents unauthorized cross-origin requests
+
+3. **Security Headers (Helmet)**:
+   - Sets various HTTP headers to enhance security
+   - Protects against common web vulnerabilities
+
+4. **Request Logging**:
+   - Development mode: Concise logs with Morgan 'dev' format
+   - Production mode: Detailed logs with Morgan 'combined' format
+
+5. **Error Handling**:
+   - Global error handler for consistent error responses
+   - Different error details in development vs. production
+   - Custom error classes for operational errors
 
 ## Authentication
 
