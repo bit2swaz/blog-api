@@ -1,60 +1,53 @@
+import axios from 'axios';
+
 // Base API URL
 const API_URL = 'http://localhost:3000/api';
 
-// Helper function for making API requests
-async function fetchApi(endpoint, options = {}) {
-  const url = `${API_URL}${endpoint}`;
-  
-  // Default headers
-  const headers = {
+// Create axios instance
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
     'Content-Type': 'application/json',
-    ...options.headers,
-  };
+  },
+});
 
-  // Add auth token if available
-  const token = localStorage.getItem('token');
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const config = {
-    ...options,
-    headers,
-  };
-
-  try {
-    const response = await fetch(url, config);
-    const data = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
+// Add a request interceptor to include auth token
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
-    
-    return data;
-  } catch (error) {
-    console.error('API Error:', error);
-    throw error;
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Add a response interceptor to handle errors
+apiClient.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    const message = error.response?.data?.message || 'Something went wrong';
+    console.error('API Error:', message);
+    return Promise.reject(error);
   }
-}
+);
 
 // API endpoints
 export const api = {
   // Auth endpoints
   auth: {
-    login: (credentials) => fetchApi('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    }),
+    login: (credentials) => apiClient.post('/auth/login', credentials),
   },
   
   // Posts endpoints
   posts: {
-    getAll: () => fetchApi('/posts'),
-    getById: (id) => fetchApi(`/posts/${id}`),
+    getAll: () => apiClient.get('/posts'),
+    getById: (id) => apiClient.get(`/posts/${id}`),
   },
   
   // Comments endpoints
   comments: {
-    getByPostId: (postId) => fetchApi(`/posts/${postId}/comments`),
+    getByPostId: (postId) => apiClient.get(`/posts/${postId}/comments`),
   },
 }; 
