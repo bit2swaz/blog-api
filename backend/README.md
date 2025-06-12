@@ -20,8 +20,10 @@ backend/
 ├── middleware/     # Custom middleware functions
 ├── prisma/         # Prisma schema and migrations
 ├── routes/         # API routes
+├── tests/          # Test files
 ├── utils/          # Utility functions
 ├── .env            # Environment variables
+├── .env.test       # Test environment variables
 ├── server.js       # Entry point
 └── package.json    # Dependencies and scripts
 ```
@@ -54,6 +56,50 @@ backend/
    ```
    npm run dev
    ```
+
+## Testing
+
+The API includes a comprehensive test suite using Jest and Supertest. Tests are organized by feature and cover authentication, posts, comments, and error handling.
+
+### Test Setup
+
+1. Create a test database:
+   ```
+   psql -U your_username -c "CREATE DATABASE blogapi_test;"
+   ```
+
+2. Configure test environment:
+   - Ensure `.env.test` file is set up with the test database connection string
+   - Test environment variables are loaded automatically when running tests
+
+### Running Tests
+
+- Run all tests:
+  ```
+  npm test
+  ```
+
+- Run specific test files:
+  ```
+  npm test -- --testMatch="**/tests/auth.test.js"
+  ```
+
+- Run tests with coverage report:
+  ```
+  npm run test:coverage
+  ```
+
+- Run tests in watch mode (for development):
+  ```
+  npm run test:watch
+  ```
+
+### Test Files
+
+- `auth.test.js`: Tests for user registration and login
+- `post.test.js`: Tests for post creation, retrieval, update, and deletion
+- `comment.test.js`: Tests for comment creation, nested replies, and deletion
+- `error.test.js`: Tests for error handling, security headers, and authentication errors
 
 ## Security Features
 
