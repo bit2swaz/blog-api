@@ -4,6 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import NewPost from './pages/NewPost';
+import EditPost from './pages/EditPost';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ToastContainer } from 'react-toastify';
@@ -39,7 +41,8 @@ function App() {
             {/* Protected routes */}
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              {/* Add more protected routes here */}
+              <Route path="/new-post" element={<NewPost />} />
+              <Route path="/edit/:id" element={<EditPost />} />
             </Route>
             
             {/* Redirect to dashboard if logged in, otherwise to login */}

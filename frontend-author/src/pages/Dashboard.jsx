@@ -17,7 +17,8 @@ import {
   Box,
   Chip,
   CircularProgress,
-  Alert
+  Alert,
+  Tooltip
 } from '@mui/material';
 import { 
   Edit as EditIcon, 
@@ -27,6 +28,7 @@ import {
   VisibilityOff as VisibilityOffIcon
 } from '@mui/icons-material';
 import { format } from 'date-fns';
+import { toast } from 'react-toastify';
 
 const Dashboard = () => {
   const [posts, setPosts] = useState([]);
@@ -35,27 +37,27 @@ const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        // Fetch posts by the logged-in author
-        const response = await axiosInstance.get('/posts/my-posts');
-        setPosts(response.data.data.posts);
-        setError(null);
-      } catch (err) {
-        console.error('Failed to fetch posts:', err);
-        setError('Failed to load posts. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPosts = async () => {
+    try {
+      setLoading(true);
+      // Fetch posts by the logged-in author
+      const response = await axiosInstance.get('/posts/my-posts');
+      setPosts(response.data.data.posts);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to fetch posts:', err);
+      setError('Failed to load posts. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPosts();
   }, []);
 
   const handleEdit = (postId) => {
-    navigate(`/edit-post/${postId}`);
+    navigate(`/edit/${postId}`);
   };
 
   const handleDelete = async (postId) => {
@@ -64,16 +66,26 @@ const Dashboard = () => {
         await axiosInstance.delete(`/posts/${postId}`);
         // Remove the deleted post from the state
         setPosts(posts.filter(post => post.id !== postId));
+        toast.success('Post deleted successfully');
       } catch (err) {
         console.error('Failed to delete post:', err);
-        setError('Failed to delete post. Please try again later.');
+        toast.error(err.response?.data?.message || 'Failed to delete post');
       }
     }
   };
 
   const handleTogglePublish = async (postId, currentStatus) => {
     try {
-      await axiosInstance.patch(`/posts/${postId}/publish`);
+      if (currentStatus) {
+        // If currently published, unpublish it
+        await axiosInstance.patch(`/posts/${postId}/unpublish`);
+        toast.success('Post unpublished successfully');
+      } else {
+        // If currently unpublished, publish it
+        await axiosInstance.patch(`/posts/${postId}/publish`);
+        toast.success('Post published successfully');
+      }
+      
       // Update the post status in the state
       setPosts(posts.map(post => {
         if (post.id === postId) {
@@ -83,12 +95,12 @@ const Dashboard = () => {
       }));
     } catch (err) {
       console.error('Failed to toggle publish status:', err);
-      setError('Failed to update publish status. Please try again later.');
+      toast.error(err.response?.data?.message || 'Failed to update publish status');
     }
   };
 
   const handleCreatePost = () => {
-    navigate('/create-post');
+    navigate('/new-post');
   };
 
   const formatDate = (dateString) => {
@@ -169,27 +181,30 @@ const Dashboard = () => {
                   <TableCell>{formatDate(post.createdAt)}</TableCell>
                   <TableCell align="center">
                     <Box>
-                      <IconButton 
-                        color="primary" 
-                        onClick={() => handleEdit(post.id)}
-                        title="Edit"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton 
-                        color="error" 
-                        onClick={() => handleDelete(post.id)}
-                        title="Delete"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                      <IconButton 
-                        color={post.published ? 'warning' : 'success'} 
-                        onClick={() => handleTogglePublish(post.id, post.published)}
-                        title={post.published ? 'Unpublish' : 'Publish'}
-                      >
-                        {post.published ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                      </IconButton>
+                      <Tooltip title="Edit">
+                        <IconButton 
+                          color="primary" 
+                          onClick={() => handleEdit(post.id)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton 
+                          color="error" 
+                          onClick={() => handleDelete(post.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={post.published ? 'Unpublish' : 'Publish'}>
+                        <IconButton 
+                          color={post.published ? 'warning' : 'success'} 
+                          onClick={() => handleTogglePublish(post.id, post.published)}
+                        >
+                          {post.published ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </Tooltip>
                     </Box>
                   </TableCell>
                 </TableRow>
