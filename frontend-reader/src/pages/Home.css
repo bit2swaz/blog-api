@@ -1,0 +1,19 @@
+.home-page {
+  text-align: center;
+}
+
+.home-page h1 {
+  margin-bottom: 0.5rem;
+}
+
+.home-page p {
+  margin-bottom: 2rem;
+  color: #888;
+}
+
+.posts-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px dashed #555;
+  border-radius: 8px;
+} 
