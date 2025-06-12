@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import './Login.css';
 
 function Login() {
@@ -11,6 +12,7 @@ function Login() {
   
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { showSuccess, showError } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,14 +29,18 @@ function Login() {
       const result = await login({ email, password });
       
       if (result.success) {
+        showSuccess('Successfully logged in!');
         // Redirect to home page on successful login
         navigate('/');
       } else {
         setError(result.message);
+        showError(result.message);
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      const errorMessage = 'An unexpected error occurred. Please try again.';
+      setError(errorMessage);
+      showError(errorMessage);
     } finally {
       setLoading(false);
     }

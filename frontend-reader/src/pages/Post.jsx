@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import './Post.css';
 
 function Post() {
@@ -15,6 +16,7 @@ function Post() {
   const [submitting, setSubmitting] = useState(false);
 
   const { isAuthenticated, user } = useAuth();
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -32,13 +34,14 @@ function Post() {
       } catch (err) {
         console.error('Failed to fetch post data:', err);
         setError('Failed to load post. Please try again later.');
+        showError('Failed to load post. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchPostData();
-  }, [id]);
+  }, [id, showError]);
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -73,9 +76,11 @@ function Post() {
             return comment;
           });
         });
+        showSuccess('Reply added successfully!');
       } else {
         // Add the new comment to the list
         setComments(prevComments => [...prevComments, response.data.comment]);
+        showSuccess('Comment added successfully!');
       }
       
       // Reset form
@@ -83,7 +88,7 @@ function Post() {
       setReplyingTo(null);
     } catch (err) {
       console.error('Failed to submit comment:', err);
-      alert('Failed to submit your comment. Please try again.');
+      showError('Failed to submit your comment. Please try again.');
     } finally {
       setSubmitting(false);
     }

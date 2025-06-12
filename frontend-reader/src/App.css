@@ -45,8 +45,36 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
+  flex: 1;
   padding: 2rem 0;
+  width: 100%;
+}
+
+/* Toast container styles */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem 0;
+  }
+  
+  .toast-container {
+    left: 20px;
+    right: 20px;
+  }
 }
