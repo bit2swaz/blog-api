@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import NewPost from './pages/NewPost';
 import EditPost from './pages/EditPost';
+import Comments from './pages/Comments';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ToastContainer } from 'react-toastify';
@@ -43,6 +44,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/new-post" element={<NewPost />} />
               <Route path="/edit/:id" element={<EditPost />} />
+              <Route path="/comments" element={<Comments />} />
             </Route>
             
             {/* Redirect to dashboard if logged in, otherwise to login */}

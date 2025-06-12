@@ -18,14 +18,16 @@ import {
   Chip,
   CircularProgress,
   Alert,
-  Tooltip
+  Tooltip,
+  Grid
 } from '@mui/material';
 import { 
   Edit as EditIcon, 
   Delete as DeleteIcon,
   Add as AddIcon,
   Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon
+  VisibilityOff as VisibilityOffIcon,
+  Comment as CommentIcon
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
@@ -103,6 +105,10 @@ const Dashboard = () => {
     navigate('/new-post');
   };
 
+  const handleViewComments = () => {
+    navigate('/comments');
+  };
+
   const formatDate = (dateString) => {
     try {
       return format(new Date(dateString), 'MMM d, yyyy');
@@ -123,19 +129,31 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Your Posts
-        </Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          startIcon={<AddIcon />}
-          onClick={handleCreatePost}
-        >
-          Create New Post
-        </Button>
-      </Box>
+      <Grid container spacing={2} alignItems="center" mb={4}>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Your Posts
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            startIcon={<CommentIcon />}
+            onClick={handleViewComments}
+          >
+            Manage Comments
+          </Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            startIcon={<AddIcon />}
+            onClick={handleCreatePost}
+          >
+            Create New Post
+          </Button>
+        </Grid>
+      </Grid>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>

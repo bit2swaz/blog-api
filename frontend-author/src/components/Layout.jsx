@@ -1,15 +1,38 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  Button, 
+  Box, 
+  Container,
+  Tabs,
+  Tab
+} from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
+  // Determine which tab is active based on current path
+  const getActiveTab = () => {
+    const path = location.pathname;
+    if (path.startsWith('/dashboard')) return 0;
+    if (path.startsWith('/comments')) return 1;
+    if (path.startsWith('/new-post') || path.startsWith('/edit/')) return 2;
+    return 0; // Default to dashboard
   };
 
   return (
@@ -30,6 +53,21 @@ const Layout = ({ children }) => {
             </Box>
           )}
         </Toolbar>
+        {user && (
+          <Box sx={{ bgcolor: 'primary.dark' }}>
+            <Tabs 
+              value={getActiveTab()} 
+              textColor="inherit"
+              indicatorColor="secondary"
+              variant="fullWidth"
+              sx={{ maxWidth: 600, mx: 'auto' }}
+            >
+              <Tab label="Posts" onClick={() => handleNavigation('/dashboard')} />
+              <Tab label="Comments" onClick={() => handleNavigation('/comments')} />
+              <Tab label="New Post" onClick={() => handleNavigation('/new-post')} />
+            </Tabs>
+          </Box>
+        )}
       </AppBar>
       <Container component="main" sx={{ mt: 4, mb: 4 }}>
         {children}
