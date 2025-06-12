@@ -39,7 +39,7 @@ model Post {
   author      User       @relation(fields: [authorId], references: [id])
   authorId    String
   comments    Comment[]
-  tags        Tag[]      @relation("PostTags", references: [id])
+  tags        Tag[]      @relation("PostTags")
 }
 
 model Comment {
