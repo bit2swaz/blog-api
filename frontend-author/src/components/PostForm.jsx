@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { toast } from 'react-toastify';
 
 const PostForm = ({ postId }) => {
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,7 @@ const PostForm = ({ postId }) => {
       } catch (err) {
         console.error('Failed to fetch post:', err);
         setError('Failed to load post data. Please try again later.');
+        toast.error('Failed to load post data. Please try again later.');
       } finally {
         setInitializing(false);
       }
@@ -76,9 +78,11 @@ const PostForm = ({ postId }) => {
       if (postId) {
         // Update existing post
         await axiosInstance.put(`/posts/${postId}`, payload);
+        toast.success('Post updated successfully!');
       } else {
         // Create new post
         await axiosInstance.post('/posts', payload);
+        toast.success('Post created successfully!');
       }
       
       // Navigate back to dashboard
@@ -86,7 +90,9 @@ const PostForm = ({ postId }) => {
       
     } catch (err) {
       console.error('Failed to save post:', err);
-      setError(err.response?.data?.message || 'Failed to save post. Please try again later.');
+      const errorMessage = err.response?.data?.message || 'Failed to save post. Please try again later.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

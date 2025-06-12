@@ -7,10 +7,13 @@ import {
   Box, 
   Container,
   Tabs,
-  Tab
+  Tab,
+  IconButton,
+  Tooltip
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Layout = ({ children }) => {
   const { logout, user } = useAuth();
@@ -19,7 +22,6 @@ const Layout = ({ children }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
   };
 
   const handleNavigation = (path) => {
@@ -47,9 +49,11 @@ const Layout = ({ children }) => {
               <Typography variant="body2" sx={{ mr: 2 }}>
                 Welcome, {user.name}
               </Typography>
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
+              <Tooltip title="Logout">
+                <IconButton color="inherit" onClick={handleLogout} edge="end">
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
           )}
         </Toolbar>

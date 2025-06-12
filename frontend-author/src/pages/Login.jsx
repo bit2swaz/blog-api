@@ -13,6 +13,7 @@ import {
   CircularProgress
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const { login } = useAuth();
@@ -30,12 +31,16 @@ const Login = () => {
       const result = await login(data);
       
       if (result.success) {
+        toast.success('Login successful! Welcome back.');
         navigate('/dashboard');
       } else {
         setError(result.message);
+        toast.error(result.message || 'Login failed. Please check your credentials.');
       }
     } catch (err) {
-      setError('An unexpected error occurred. Please try again.');
+      const errorMessage = 'An unexpected error occurred. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error(err);
     } finally {
       setLoading(false);

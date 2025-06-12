@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 // Create the context
 const AuthContext = createContext();
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
           const currentTime = Date.now() / 1000;
           if (decoded.exp < currentTime) {
             // Token is expired
+            toast.info('Your session has expired. Please login again.');
             logout();
             return;
           }
@@ -41,6 +43,7 @@ export const AuthProvider = ({ children }) => {
           setUser(decoded);
         } catch (error) {
           console.error('Invalid token:', error);
+          toast.error('Authentication error. Please login again.');
           logout();
         }
       }
@@ -85,6 +88,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
+    toast.success('Logged out successfully');
     navigate('/login');
   };
 
