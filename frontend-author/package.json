@@ -3,10 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.1",
+    "@mui/material": "^7.1.1",
+    "@tinymce/tinymce-react": "^6.2.1",
+    "axios": "^1.9.0",
     "cra-template-pwa": "2.0.0",
+    "jwt-decode": "^4.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-scripts": "5.0.1"
+    "react-hook-form": "^7.57.0",
+    "react-router-dom": "^7.6.2",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.5"
   },
   "scripts": {
     "start": "react-scripts start",
