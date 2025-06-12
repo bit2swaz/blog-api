@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { useForm } from 'react-hook-form';
+import axiosInstance from '../services/axiosInstance';
 import { 
   Container, 
   Box, 
@@ -13,33 +13,32 @@ import {
   CircularProgress,
   Grid
 } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { toast } from 'react-toastify';
 
-const Login = () => {
-  const { login } = useAuth();
+const Signup = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm();
+  const password = watch('password', '');
   
   const onSubmit = async (data) => {
     try {
       setLoading(true);
       setError(null);
       
-      const result = await login(data);
+      // Remove confirmPassword from data before sending to API
+      const { confirmPassword, ...signupData } = data;
       
-      if (result.success) {
-        toast.success('Login successful! Welcome back.');
-        navigate('/dashboard');
-      } else {
-        setError(result.message);
-        toast.error(result.message || 'Login failed. Please check your credentials.');
-      }
+      const response = await axiosInstance.post('/auth/signup', signupData);
+      
+      toast.success('Account created successfully! Please log in.');
+      navigate('/login');
+      
     } catch (err) {
-      const errorMessage = 'An unexpected error occurred. Please try again.';
+      const errorMessage = err.response?.data?.message || 'Failed to create account. Please try again.';
       setError(errorMessage);
       toast.error(errorMessage);
       console.error(err);
@@ -77,11 +76,11 @@ const Login = () => {
               mb: 2
             }}
           >
-            <LockOutlinedIcon />
+            <PersonAddIcon />
           </Box>
           
           <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-            Author Login
+            Create Author Account
           </Typography>
           
           {error && (
@@ -95,10 +94,28 @@ const Login = () => {
               margin="normal"
               required
               fullWidth
+              id="username"
+              label="Username"
+              autoComplete="username"
+              autoFocus
+              {...register('username', { 
+                required: 'Username is required',
+                minLength: {
+                  value: 3,
+                  message: 'Username must be at least 3 characters'
+                }
+              })}
+              error={!!errors.username}
+              helperText={errors.username?.message}
+            />
+            
+            <TextField
+              margin="normal"
+              required
+              fullWidth
               id="email"
               label="Email Address"
               autoComplete="email"
-              autoFocus
               {...register('email', { 
                 required: 'Email is required',
                 pattern: {
@@ -117,7 +134,7 @@ const Login = () => {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               {...register('password', { 
                 required: 'Password is required',
                 minLength: {
@@ -129,6 +146,22 @@ const Login = () => {
               helperText={errors.password?.message}
             />
             
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Confirm Password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="new-password"
+              {...register('confirmPassword', { 
+                required: 'Please confirm your password',
+                validate: value => value === password || 'Passwords do not match'
+              })}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword?.message}
+            />
+            
             <Button
               type="submit"
               fullWidth
@@ -136,14 +169,14 @@ const Login = () => {
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
             >
-              {loading ? <CircularProgress size={24} /> : 'Sign In'}
+              {loading ? <CircularProgress size={24} /> : 'Sign Up'}
             </Button>
             
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link to="/signup" style={{ textDecoration: 'none' }}>
+                <Link to="/login" style={{ textDecoration: 'none' }}>
                   <Typography variant="body2" color="primary">
-                    Don't have an account? Sign up
+                    Already have an account? Sign in
                   </Typography>
                 </Link>
               </Grid>
@@ -155,4 +188,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Signup; 
