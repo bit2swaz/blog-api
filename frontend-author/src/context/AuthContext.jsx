@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../utils/axios';
 import { toast } from 'react-toastify';
 
 // Create the context
@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      const response = await axios.post('http://localhost:3000/api/auth/login', credentials);
+      const response = await axiosInstance.post('/auth/login', credentials);
       const { token: newToken } = response.data.data;
       
       // Store token in localStorage

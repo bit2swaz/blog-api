@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Editor } from '@tinymce/tinymce-react';
-import axiosInstance from '../services/axiosInstance';
+import axiosInstance from '../utils/axios';
 import Layout from './Layout';
 import {
   Box,

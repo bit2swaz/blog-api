@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axiosInstance from '../services/axiosInstance';
+import axiosInstance from '../utils/axios';
 import Layout from '../components/Layout';
 import { 
   Typography, 

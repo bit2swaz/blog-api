@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import axiosInstance from '../services/axiosInstance';
+import axiosInstance from '../utils/axios';
 import { 
   Container, 
   Box, 
