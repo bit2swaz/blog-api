@@ -69,27 +69,37 @@ The API uses JWT (JSON Web Token) for authentication:
 
 ## API Endpoints
 
-- **Auth**
-  - `POST /api/auth/signup` - Register a new user
-  - `POST /api/auth/login` - Login a user
+### Auth
 
-- **Users**
-  - `GET /api/users/profile` - Get user profile (protected)
+- `POST /api/auth/signup` - Register a new user
+- `POST /api/auth/login` - Login a user
 
-- **Posts**
-  - `GET /api/posts` - Get all posts
-  - `GET /api/posts/:id` - Get a specific post
-  - `POST /api/posts` - Create a new post (protected, author only)
-  - `PUT /api/posts/:id` - Update a post (protected, author only)
-  - `DELETE /api/posts/:id` - Delete a post (protected, author only)
+### Users
 
-- **Comments**
-  - `GET /api/comments/post/:postId` - Get comments for a post
-  - `POST /api/comments` - Create a new comment (protected)
-  - `PUT /api/comments/:id` - Update a comment (protected)
-  - `DELETE /api/comments/:id` - Delete a comment (protected)
+- `GET /api/users/profile` - Get user profile (protected)
 
-- **Tags**
-  - `GET /api/tags` - Get all tags
-  - `POST /api/tags` - Create a new tag (protected, author only)
-  - `DELETE /api/tags/:id` - Delete a tag (protected, author only) 
+### Posts
+
+- `GET /api/posts` - Get all published posts
+- `GET /api/posts/:id` - Get a specific published post with details
+- `GET /api/posts/unpublished` - Get all posts by logged-in author (protected)
+- `POST /api/posts` - Create a new post (protected)
+  - Request body: `{ "title": "Post Title", "content": "Post content", "tags": ["tag1", "tag2"] }`
+  - New posts are created with `published: false` by default
+- `PUT /api/posts/:id` - Update a post's title, content, or tags (protected, author only)
+  - Request body: `{ "title": "Updated Title", "content": "Updated content", "tags": ["tag1", "tag3"] }`
+- `PATCH /api/posts/:id/publish` - Toggle publish status (protected, author only)
+- `DELETE /api/posts/:id` - Delete a post (protected, author only)
+
+### Comments
+
+- `GET /api/comments/post/:postId` - Get comments for a post
+- `POST /api/comments` - Create a new comment (protected)
+- `PUT /api/comments/:id` - Update a comment (protected)
+- `DELETE /api/comments/:id` - Delete a comment (protected)
+
+### Tags
+
+- `GET /api/tags` - Get all tags
+- `POST /api/tags` - Create a new tag (protected, author only)
+- `DELETE /api/tags/:id` - Delete a tag (protected, author only) 
