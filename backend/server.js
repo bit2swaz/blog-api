@@ -17,12 +17,7 @@ app.use(helmet()); // Set security HTTP headers
 
 // CORS configuration
 app.use(cors({
-  origin: [
-    'http://localhost:3000', // Frontend author
-    'http://localhost:3001', // Frontend reader
-    process.env.FRONTEND_AUTHOR_URL,
-    process.env.FRONTEND_READER_URL
-  ].filter(Boolean), // Filter out undefined values
+  origin: '*', // Allow all origins
   credentials: true
 }));
 
