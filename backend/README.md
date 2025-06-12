@@ -50,27 +50,46 @@ backend/
    npm run dev
    ```
 
+## Authentication
+
+The API uses JWT (JSON Web Token) for authentication:
+
+1. **Signup**: `POST /api/auth/signup`
+   - Request body: `{ "name": "User Name", "email": "user@example.com", "password": "password123", "role": "USER" }`
+   - Response: User object and JWT token
+
+2. **Login**: `POST /api/auth/login`
+   - Request body: `{ "email": "user@example.com", "password": "password123" }`
+   - Response: User object and JWT token
+
+3. **Authentication**:
+   - Store the JWT token in localStorage
+   - Include it in requests: `Authorization: Bearer YOUR_JWT_TOKEN`
+   - Protected routes require valid JWT
+
 ## API Endpoints
 
+- **Auth**
+  - `POST /api/auth/signup` - Register a new user
+  - `POST /api/auth/login` - Login a user
+
 - **Users**
-  - `POST /api/users/register` - Register a new user
-  - `POST /api/users/login` - Login a user
-  - `GET /api/users/profile` - Get user profile
+  - `GET /api/users/profile` - Get user profile (protected)
 
 - **Posts**
   - `GET /api/posts` - Get all posts
   - `GET /api/posts/:id` - Get a specific post
-  - `POST /api/posts` - Create a new post
-  - `PUT /api/posts/:id` - Update a post
-  - `DELETE /api/posts/:id` - Delete a post
+  - `POST /api/posts` - Create a new post (protected, author only)
+  - `PUT /api/posts/:id` - Update a post (protected, author only)
+  - `DELETE /api/posts/:id` - Delete a post (protected, author only)
 
 - **Comments**
   - `GET /api/comments/post/:postId` - Get comments for a post
-  - `POST /api/comments` - Create a new comment
-  - `PUT /api/comments/:id` - Update a comment
-  - `DELETE /api/comments/:id` - Delete a comment
+  - `POST /api/comments` - Create a new comment (protected)
+  - `PUT /api/comments/:id` - Update a comment (protected)
+  - `DELETE /api/comments/:id` - Delete a comment (protected)
 
 - **Tags**
   - `GET /api/tags` - Get all tags
-  - `POST /api/tags` - Create a new tag
-  - `DELETE /api/tags/:id` - Delete a tag 
+  - `POST /api/tags` - Create a new tag (protected, author only)
+  - `DELETE /api/tags/:id` - Delete a tag (protected, author only) 
