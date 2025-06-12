@@ -8,7 +8,22 @@ const prisma = new PrismaClient();
 // Sign up a new user
 const signup = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, username, email, password, role } = req.body;
+
+    // Use username as name if name is not provided
+    const userName = name || username;
+
+    if (!userName) {
+      return next(new AppError('Name or username is required', 400));
+    }
+
+    if (!email) {
+      return next(new AppError('Email is required', 400));
+    }
+
+    if (!password) {
+      return next(new AppError('Password is required', 400));
+    }
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -26,7 +41,7 @@ const signup = async (req, res, next) => {
     // Create user
     const user = await prisma.user.create({
       data: {
-        name,
+        name: userName,
         email,
         password: hashedPassword,
         role: role || 'USER'

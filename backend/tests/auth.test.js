@@ -33,12 +33,29 @@ describe('Auth Endpoints', () => {
       expect(res.body.data.user).not.toHaveProperty('password');
     });
 
+    it('should create a new user with username instead of name', async () => {
+      const res = await request(app)
+        .post('/api/auth/signup')
+        .send({
+          username: 'usernametest',
+          email: 'username@example.com',
+          password: 'password123',
+          role: 'USER'
+        });
+      
+      expect(res.statusCode).toEqual(201);
+      expect(res.body.status).toEqual('success');
+      expect(res.body.data.user).toHaveProperty('name', 'usernametest');
+      expect(res.body.data.user).toHaveProperty('email', 'username@example.com');
+    });
+
     it('should return error if user already exists', async () => {
+      // Try to create the same user again
       const res = await request(app)
         .post('/api/auth/signup')
         .send({
           name: testUser.name,
-          email: testUser.email,
+          email: testUser.email, // This email is already used in the first test
           password: testUser.password
         });
       
