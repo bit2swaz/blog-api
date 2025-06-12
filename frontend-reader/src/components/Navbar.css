@@ -14,8 +14,21 @@
 .navbar-links {
   display: flex;
   gap: 1.5rem;
+  align-items: center;
 }
 
 .nav-link {
   transition: color 0.3s ease;
+}
+
+.welcome-message {
+  font-size: 0.9rem;
+  color: #888;
+  margin-right: 0.5rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .navbar {
+    border-bottom-color: #ddd;
+  }
 } 

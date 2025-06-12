@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { api } from '../services/api';
-import { isAuthenticated } from '../utils/auth';
+import { useAuth } from '../context/AuthContext';
 import './Post.css';
 
 function Post() {
@@ -14,7 +14,7 @@ function Post() {
   const [replyingTo, setReplyingTo] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const isLoggedIn = isAuthenticated();
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -48,7 +48,7 @@ function Post() {
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     
-    if (!commentText.trim()) return;
+    if (!commentText.trim() || !isAuthenticated) return;
     
     try {
       setSubmitting(true);
@@ -109,7 +109,7 @@ function Post() {
         </div>
         <div className="comment-content">{comment.content}</div>
         <div className="comment-actions">
-          {isLoggedIn && (
+          {isAuthenticated && (
             <button 
               className="reply-button" 
               onClick={() => handleReplyClick(comment.id)}
@@ -176,7 +176,7 @@ function Post() {
           <p className="no-comments">No comments yet. Be the first to comment!</p>
         )}
         
-        {isLoggedIn ? (
+        {isAuthenticated ? (
           <div className="comment-form-container">
             <h3 id="comment-form">
               {replyingTo ? 'Reply to comment' : 'Leave a comment'}
@@ -195,7 +195,7 @@ function Post() {
               <textarea
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
-                placeholder="Write your comment here..."
+                placeholder={`Writing as ${user?.name || 'Anonymous'}...`}
                 required
               />
               <button 
@@ -210,7 +210,7 @@ function Post() {
         ) : (
           <div className="login-prompt">
             <p>Please log in to leave a comment.</p>
-            <a href="/login" className="login-link">Log in</a>
+            <Link to="/login" className="login-link">Log in</Link>
           </div>
         )}
       </section>
