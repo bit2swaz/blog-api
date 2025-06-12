@@ -54,7 +54,7 @@ This project is a complete blog platform consisting of three main components:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/blog-api.git
+   git clone https://github.com/bit2swaz/blog-api.git
    cd blog-api
    ```
 
